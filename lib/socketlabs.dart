@@ -107,9 +107,10 @@ class MergeData {
   MergeData();
 
   Map<String, dynamic> toJson() => {
-        'PerMessage':
-            perMessage.map((list) => list.map((pair) => pair.toJson())),
-        'Global': global.map((pair) => pair.toJson()),
+        'PerMessage': perMessage
+            .map((list) => list.map((pair) => pair.toJson()).toList())
+            .toList(),
+        'Global': global.map((pair) => pair.toJson()).toList(),
       };
 }
 

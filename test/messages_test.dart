@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
@@ -142,6 +144,9 @@ void main() {
             ]
           }
         });
+
+        // Making sure it encodes properly
+        jsonEncode(message.toJson());
       });
     });
   });
