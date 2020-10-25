@@ -105,6 +105,7 @@ void main() {
           ..textBody = 'TEXT'
           ..htmlBody = '<html>TEXT</html>'
           ..ampBody = '<html>AMP</html>'
+          ..apiTemplate = '3'
           ..messageId = 'MSG_ID'
           ..mailingId = 'MAILING_ID'
           ..charset = 'utf-8'
@@ -126,6 +127,7 @@ void main() {
           'TextBody': 'TEXT',
           'HtmlBody': '<html>TEXT</html>',
           'AmpBody': '<html>AMP</html>',
+          'ApiTemplate': '3',
           'MessageId': 'MSG_ID',
           'MailingId': 'MAILING_ID',
           'Charset': 'utf-8',

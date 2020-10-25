@@ -62,6 +62,7 @@ class BasicMessage extends Message {
   String /*?*/ textBody;
   String /*?*/ htmlBody;
   String /*?*/ ampBody;
+  String /*?*/ apiTemplate;
   String /*?*/ messageId;
   String /*?*/ mailingId;
   String /*?*/ charset;
@@ -76,6 +77,7 @@ class BasicMessage extends Message {
         if (textBody != null) 'TextBody': textBody,
         if (htmlBody != null) 'HtmlBody': htmlBody,
         if (ampBody != null) 'AmpBody': ampBody,
+        if (apiTemplate != null) 'ApiTemplate': apiTemplate,
         if (messageId != null) 'MessageId': messageId,
         if (mailingId != null) 'MailingId': mailingId,
         if (charset != null) 'Charset': charset,

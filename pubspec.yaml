@@ -1,5 +1,5 @@
 name: socketlabs
-version: 0.0.1
+version: 0.0.2
 description: An API client for the SocketLabs email service.
 repository: https://github.com/enyo/socketlabs
 environment:
