@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
+/// This is your main entry point. You'll probably want to create __one__
+/// instance of this class and keep a reference for all further requests.
 class SocketLabsClient {
   final _log = Logger('SocketLabsClient');
   final Uri apiUrl;
@@ -12,14 +14,21 @@ class SocketLabsClient {
 
   final http.Client httpClient;
 
+  /// You get the [serverId] and the [apiKey] from SocketLabs when you sign up
+  /// to their service.
+  /// The [apiUrl] should not be changed normally, unless you have a separate
+  /// instance.
   SocketLabsClient({
-    @required this.serverId,
-    @required this.apiKey,
+    required this.serverId,
+    required this.apiKey,
     String apiUrl = 'https://inject.socketlabs.com/api/v1',
-    http.Client httpClient,
+    @visibleForTesting http.Client? httpClient,
   })  : httpClient = httpClient ?? http.Client(),
         apiUrl = Uri.parse(apiUrl);
 
+  /// Sends the [messages] to the `SocketLabs` API.
+  ///
+  /// See [BasicMessage] on how to build a message.
   Future<void> send(List<Message> messages) async {
     _log.finest('Sending email.');
 
@@ -49,31 +58,35 @@ class SocketLabsClient {
   }
 }
 
+/// Use [BasicMessage] to build a message.
 abstract class Message {
   Map<String, dynamic> toJson();
 }
 
+/// This library only supports the [BasicMessage] for now, but you can build
+/// everything with it.
+/// Refer to the [docs](https://www.socketlabs.com/docs/) for more info.
 class BasicMessage extends Message {
   final to = <Email>[];
   final Email from;
   final String subject;
 
-  Email /*?*/ replyTo;
-  String /*?*/ textBody;
-  String /*?*/ htmlBody;
-  String /*?*/ ampBody;
-  String /*?*/ apiTemplate;
-  String /*?*/ messageId;
-  String /*?*/ mailingId;
-  String /*?*/ charset;
-  MergeData /*?*/ mergeData;
+  Email? replyTo;
+  String? textBody;
+  String? htmlBody;
+  String? ampBody;
+  String? apiTemplate;
+  String? messageId;
+  String? mailingId;
+  String? charset;
+  MergeData? mergeData;
 
   @override
   Map<String, dynamic> toJson() => {
         'To': to.map((email) => email.toJson()).toList(),
         'Subject': subject,
         'From': from.toJson(),
-        if (replyTo != null) 'ReplyTo': replyTo /*!*/ .toJson(),
+        if (replyTo != null) 'ReplyTo': replyTo!.toJson(),
         if (textBody != null) 'TextBody': textBody,
         if (htmlBody != null) 'HtmlBody': htmlBody,
         if (ampBody != null) 'AmpBody': ampBody,
@@ -81,24 +94,24 @@ class BasicMessage extends Message {
         if (messageId != null) 'MessageId': messageId,
         if (mailingId != null) 'MailingId': mailingId,
         if (charset != null) 'Charset': charset,
-        if (mergeData != null) 'MergeData': mergeData /*!*/ .toJson(),
+        if (mergeData != null) 'MergeData': mergeData!.toJson(),
       };
 
   BasicMessage({
-    @required this.from,
-    @required this.subject,
+    required this.from,
+    required this.subject,
   });
 }
 
 class Email {
   final String address;
-  final String /*?*/ friendlyName;
+  final String? friendlyName;
 
   Email(this.address, [this.friendlyName]);
 
   Map<String, String> toJson() => {
         'EmailAddress': address,
-        if (friendlyName != null) 'FriendlyName': friendlyName /*!*/,
+        if (friendlyName != null) 'FriendlyName': friendlyName!,
       };
 }
 

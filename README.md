@@ -8,7 +8,6 @@ A dart implementation of the SocketLabs API client.
 
 See the [example](example) for usage.
 
-## Non-nullable
+## Null Safety
 
-I have started working on non-nullable support, and as soon as the dependencies
-are ported too, I'll enable it.
+This package is ready for null safety.
