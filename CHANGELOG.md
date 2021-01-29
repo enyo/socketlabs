@@ -1,3 +1,7 @@
+## 0.1.0-nullsafety.1
+
+- Improve dependencies
+
 ## 0.1.0-nullsafety.0
 
 - Add null safety support
