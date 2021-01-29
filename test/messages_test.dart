@@ -1,22 +1,21 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:socketlabs/socketlabs.dart';
 import 'package:test/test.dart';
 
-class MockHttpClient extends Mock implements http.Client {}
+class MockClient extends Mock implements http.Client {}
 
-class MockResponse extends Mock implements Response {}
+class MockResponse extends Mock implements http.Response {}
 
 void main() {
   group('SocketLabs', () {
     group('.send()', () {
-      http.Client httpClient;
-      SocketLabsClient socketLabs;
+      late http.Client httpClient;
+      late SocketLabsClient socketLabs;
       setUp(() {
-        httpClient = MockHttpClient();
+        httpClient = MockClient();
         socketLabs = SocketLabsClient(
           serverId: 'server-id',
           apiKey: 'api-key',
@@ -25,11 +24,14 @@ void main() {
       });
       test('creates a valid http request', () async {
         final response = MockResponse();
-        when(response.body).thenReturn('{"ErrorCode":"Success"}');
-        when(httpClient.post(captureAny,
-                headers: captureAnyNamed('headers'),
-                body: captureAnyNamed('body')))
-            .thenAnswer((realInvocation) => Future.value(response));
+
+        when(response).calls(#body).thenReturn('{"ErrorCode":"Success"}');
+        when(httpClient).calls(#post).withArgs(positional: [
+          any
+        ], named: {
+          #headers: any,
+          #body: any
+        }).thenReturn(Future.value(response));
         final message =
             BasicMessage(from: Email('from@test'), subject: 'Subject');
 
@@ -41,23 +43,28 @@ void main() {
           ..textBody = 'TEXT';
         await socketLabs.send([message]);
 
-        verify(httpClient.post(
-            Uri.parse('https://inject.socketlabs.com/api/v1/email'),
-            headers: {'Content-Type': 'application/json'},
-            body:
-                '{"ServerId":"server-id","ApiKey":"api-key","Messages":[{"To":[{"EmailAddress":"to1@email"},{"EmailAddress":"to2@email","FriendlyName":"Mr. Two"}],"Subject":"Subject","From":{"EmailAddress":"from@test"},"TextBody":"TEXT"}]}'));
+        verify(httpClient).called(#post).withArgs(
+          positional: [Uri.parse('https://inject.socketlabs.com/api/v1/email')],
+          named: {
+            #headers: {'Content-Type': 'application/json'},
+            #body:
+                '{"ServerId":"server-id","ApiKey":"api-key","Messages":[{"To":[{"EmailAddress":"to1@email"},{"EmailAddress":"to2@email","FriendlyName":"Mr. Two"}],"Subject":"Subject","From":{"EmailAddress":"from@test"},"TextBody":"TEXT"}]}'
+          },
+        ).once();
       });
 
       test('properly handles error codes', () async {
         final response = MockResponse();
         final json =
             '{"ErrorCode":"Warning","MessageResults":[{"Index":0,"ErrorCode":"InvalidFromAddress","AddressResults":null}],"TransactionReceipt":null}';
-        when(response.body).thenReturn(json);
+        when(response).calls(#body).thenReturn(json);
 
-        when(httpClient.post(captureAny,
-                headers: captureAnyNamed('headers'),
-                body: captureAnyNamed('body')))
-            .thenAnswer((realInvocation) => Future.value(response));
+        when(httpClient).calls(#post).withArgs(positional: [
+          any
+        ], named: {
+          #headers: any,
+          #body: any
+        }).thenReturn(Future.value(response));
         final message =
             BasicMessage(from: Email('from@test'), subject: 'Subject');
 
@@ -72,12 +79,14 @@ void main() {
       });
       test('properly handles invalid json response', () async {
         final response = MockResponse();
-        when(response.body).thenReturn(('Invalid Json'));
+        when(response).calls(#body).thenReturn(('Invalid Json'));
 
-        when(httpClient.post(captureAny,
-                headers: captureAnyNamed('headers'),
-                body: captureAnyNamed('body')))
-            .thenAnswer((realInvocation) => Future.value(response));
+        when(httpClient).calls(#post).withArgs(positional: [
+          any
+        ], named: {
+          #headers: any,
+          #body: any
+        }).thenReturn(Future.value(response));
         final message =
             BasicMessage(from: Email('from@test'), subject: 'Subject');
 
