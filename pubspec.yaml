@@ -22,3 +22,4 @@ dev_dependencies:
 dependency_overrides:
   shelf:
     git: git://github.com/dart-lang/shelf.git
+  logging: ^1.0.0-nullsafety.0
