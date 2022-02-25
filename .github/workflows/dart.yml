@@ -2,25 +2,24 @@ name: Dart CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [main]
   pull_request:
-    branches: [ master ]
+    branches: [main]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     container:
-      image:  google/dart:2.12-beta
+      image: google/dart:2.15
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Install dependencies
-      run: dart pub get
-    - name: Analyze code
-      run: dart analyze --fatal-infos --fatal-warnings
-    - name: Check code formatting
-      run: dart format -o none --set-exit-if-changed .
-    - name: Run tests
-      run: dart test
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: dart pub get
+      - name: Analyze code
+        run: dart analyze --fatal-infos --fatal-warnings
+      - name: Check code formatting
+        run: dart format -o none --set-exit-if-changed .
+      - name: Run tests
+        run: dart test
