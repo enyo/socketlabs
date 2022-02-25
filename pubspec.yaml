@@ -1,25 +1,18 @@
 name: socketlabs
-version: 0.1.0-nullsafety.1
+version: 0.1.0
 description: >-
-    An API client for the SocketLabs email service, that allows you to send
-    emails using their REST API.
+  An API client for the SocketLabs email service, that allows you to send
+  emails using their REST API.
 repository: https://github.com/enyo/socketlabs
 environment:
-  sdk: ">=2.12.0-0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
-  http: ^0.13.0-nullsafety.0 
-  logging: ">=0.11.0 <2.0.0"
-  meta: ^1.3.0-nullsafety.6
+  http: ^0.13.4
+  logging: "^1.0.0"
 
 dev_dependencies:
-  build_runner: ^1.0.0
-  pedantic: ^1.10.0-nullsafety.3
-  mocktail: ^0.0.1-dev.10
-  shelf: any # Added to get `pub get` to work. Can be removed at any time.
-  test: ^1.16.0-nullsafety.4
-
-dependency_overrides:
-  shelf:
-    git: git://github.com/dart-lang/shelf.git
-  logging: ^1.0.0-nullsafety.0
+  build_runner: ^2.1.7
+  mocktail: ^0.2.0
+  test: ^1.20.0
+  lints: ^1.0.1

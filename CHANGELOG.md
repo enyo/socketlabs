@@ -1,3 +1,7 @@
+## 0.1.0 (2022-02-25)
+
+- Update all dependencies to major null safety enabled versions.
+
 ## 0.1.0-nullsafety.1
 
 - Improve dependencies

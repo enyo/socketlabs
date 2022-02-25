@@ -10,6 +10,9 @@ class MockClient extends Mock implements http.Client {}
 class MockResponse extends Mock implements http.Response {}
 
 void main() {
+  setUpAll(() {
+    registerFallbackValue(Uri());
+  });
   group('SocketLabs', () {
     group('.send()', () {
       late http.Client httpClient;
@@ -25,13 +28,10 @@ void main() {
       test('creates a valid http request', () async {
         final response = MockResponse();
 
-        when(response).calls(#body).thenReturn('{"ErrorCode":"Success"}');
-        when(httpClient).calls(#post).withArgs(positional: [
-          any
-        ], named: {
-          #headers: any,
-          #body: any
-        }).thenReturn(Future.value(response));
+        when(() => response.body).thenReturn('{"ErrorCode":"Success"}');
+        when(() => httpClient.post(any(),
+                headers: any(named: 'headers'), body: any(named: 'body')))
+            .thenAnswer((_) => Future.value(response));
         final message =
             BasicMessage(from: Email('from@test'), subject: 'Subject');
 
@@ -43,28 +43,23 @@ void main() {
           ..textBody = 'TEXT';
         await socketLabs.send([message]);
 
-        verify(httpClient).called(#post).withArgs(
-          positional: [Uri.parse('https://inject.socketlabs.com/api/v1/email')],
-          named: {
-            #headers: {'Content-Type': 'application/json'},
-            #body:
-                '{"ServerId":"server-id","ApiKey":"api-key","Messages":[{"To":[{"EmailAddress":"to1@email"},{"EmailAddress":"to2@email","FriendlyName":"Mr. Two"}],"Subject":"Subject","From":{"EmailAddress":"from@test"},"TextBody":"TEXT"}]}'
-          },
-        ).once();
+        verify(() => httpClient.post(
+                Uri.parse('https://inject.socketlabs.com/api/v1/email'),
+                headers: {'Content-Type': 'application/json'},
+                body:
+                    '{"ServerId":"server-id","ApiKey":"api-key","Messages":[{"To":[{"EmailAddress":"to1@email"},{"EmailAddress":"to2@email","FriendlyName":"Mr. Two"}],"Subject":"Subject","From":{"EmailAddress":"from@test"},"TextBody":"TEXT"}]}'))
+            .called(1);
       });
 
       test('properly handles error codes', () async {
         final response = MockResponse();
         final json =
             '{"ErrorCode":"Warning","MessageResults":[{"Index":0,"ErrorCode":"InvalidFromAddress","AddressResults":null}],"TransactionReceipt":null}';
-        when(response).calls(#body).thenReturn(json);
+        when(() => response.body).thenReturn(json);
 
-        when(httpClient).calls(#post).withArgs(positional: [
-          any
-        ], named: {
-          #headers: any,
-          #body: any
-        }).thenReturn(Future.value(response));
+        when(() => httpClient.post(any(),
+                headers: any(named: 'headers'), body: any(named: 'body')))
+            .thenAnswer((_) => Future.value(response));
         final message =
             BasicMessage(from: Email('from@test'), subject: 'Subject');
 
@@ -79,14 +74,12 @@ void main() {
       });
       test('properly handles invalid json response', () async {
         final response = MockResponse();
-        when(response).calls(#body).thenReturn(('Invalid Json'));
 
-        when(httpClient).calls(#post).withArgs(positional: [
-          any
-        ], named: {
-          #headers: any,
-          #body: any
-        }).thenReturn(Future.value(response));
+        when(() => response.body).thenReturn(('Invalid Json'));
+
+        when(() => httpClient.post(any(),
+                headers: any(named: 'headers'), body: any(named: 'body')))
+            .thenAnswer((_) => Future.value(response));
         final message =
             BasicMessage(from: Email('from@test'), subject: 'Subject');
 
